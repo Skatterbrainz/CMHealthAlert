@@ -35,9 +35,7 @@ function Get-CMAClientHealthSummary {
     Write-CMALog -Message "requesting client health data"
     $qpath = Join-Path $PSScriptRoot $qfile
     try {
-        
-        $ch = @(Invoke-DbaQuery -SqlInstance $SiteServer -Database $Database -File $qpath -EnableException)
-        $ch
+        @(Invoke-DbaQuery -SqlInstance $SiteServer -Database $Database -File $qpath -EnableException)
     }
     catch {
         Write-CMALog -Message $($_.Exception.Message) -Category Error
@@ -90,7 +88,7 @@ function Get-CMAAppDeploymentExceptions {
         $dn  = $row.DeploymentName
         $cid = $row.TargetCollectionID
         $cn  = $row.CollectionName
-        $ec  = $row.Error
+        $ec  = $row.Error.ToInt()
         $q2  = $basequery -replace 'XXCOLLECTIONID', $cid
         Write-CMALog -Message "query length: $($q2.Length)"
         Write-CMALog -Message "deployment: $dn / collection: $cn / errors: $ec"
@@ -100,24 +98,24 @@ function Get-CMAAppDeploymentExceptions {
         if ($clients.Count -gt 0) {
             foreach ($client in $clients) {
                 [pscustomobject]@{
-                    ComputerName  = $client.Name
-                    ResourceID    = $client.ResourceID
-                    ClientVersion = $client.ClientVersion
-                    Manufacturer  = $client.Manufacturer
-                    Model         = $client.Model
-                    SerialNumber  = $client.SerialNumber
-                    Deployment    = $dn
-                    DeploymentID  = $aid
-                    Collection    = $cn
-                    CollectionID  = $cid
-                    OSName        = $client.OSName
-                    OSBuild       = $client.OSBuild
-                    ADSiteName    = $client.ADSite
-                    LastUser      = $client.LastUser
-                    StatusMsg     = $client.StatusMsg
-                    StatusMsgID   = $client.LastSMID
-                    LastError     = $client.LastError
-                    StatusTime    = $client.StateTime
+                    ComputerName  = $client.Name.ToString()
+                    ResourceID    = $client.ResourceID.ToString()
+                    ClientVersion = $client.ClientVersion.ToString()
+                    Manufacturer  = $client.Manufacturer.ToString()
+                    Model         = $client.Model.ToString()
+                    SerialNumber  = $client.SerialNumber.ToString()
+                    Deployment    = $dn.ToString()
+                    DeploymentID  = $aid.ToString()
+                    Collection    = $cn.ToString()
+                    CollectionID  = $cid.ToString()
+                    OSName        = $client.OSName.ToString()
+                    OSBuild       = $client.OSBuild.ToString()
+                    ADSiteName    = $client.ADSite.ToString()
+                    LastUser      = $client.LastUser.ToString()
+                    StatusMsg     = $client.StatusMsg.ToString()
+                    StatusMsgID   = $client.LastSMID.ToString()
+                    LastError     = $client.LastError.ToString()
+                    StatusTime    = $client.StateTime.ToString()
                     RunHost       = $env:COMPUTERNAME
                     RunUser       = $env:USERNAME
                     ClientNum     = "$clientnum of $clientall"
